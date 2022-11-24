@@ -18,6 +18,7 @@ export default function  Dashboard  ()  {
     const [showfiledata ,setShowfiledata] = useState(false);
 
 
+
  const { data: file, error, mutate } = useSWR('/api/dashboard', () =>
      axios
          .get('/api/dashboard')
@@ -36,7 +37,15 @@ const filedatashow = (statut)=>{
 }
 const closeTab = (on_off)=>{
     setShowfiledata(on_off)
+    setDrpzone(on_off)
 }
+
+{/*
+let bigCities = cities.filter(function (e) {
+    return e.population > 3000000;
+});
+
+*/}
 const Sortdata = (parm)=>{
     switch(parm) {
         case "size":
@@ -46,14 +55,34 @@ const Sortdata = (parm)=>{
           break;
         case "filename":
         file.sort((a, b) => {
-            return b.filename - a.filename;
+            return a.filename.localeCompare(b.filename);
             });
           break;
+        case "date":
+        file.sort((a, b) => {
+            return b.created_at - a.created_at;
+            });
+            break;
         default:
           // code block
       }
 
     setSort(false)
+}
+
+const Filterdata = (parm)=>{
+   let records;
+    switch(parm) {
+        case "png":
+           records = file.filter((e) => {
+                 return e.type === "png";
+                });break;
+        default:
+          // code block
+      }
+      
+console.log("rec:",records)
+    setFilter(false);
 }
  console.log("swr data",file);
  console.log("index",More);
@@ -90,8 +119,8 @@ const Sortdata = (parm)=>{
                         </Link>
                      
                        {/* loop of types */} 
-                         <div className="text-center mt-2">
-                            <a  href="#"   id="filter_by" className="mt-3 text-center font-Cairo cursor-pointer">png</a>
+                         <div onClick={()=>{Filterdata("png")}}  className="text-center mt-2">
+                            <p id="filter_by" className="mt-3 text-center font-Cairo cursor-pointer">png</p>
                         </div>
                         {/* End loop */} 
                     </div>
@@ -108,8 +137,8 @@ const Sortdata = (parm)=>{
                 <div id="sort" className=" mouseup border-[1px] border-[#10162f] z-10 w-[120px]  absolute right-[6vw] h-auto top-8 bg-white">
                     <div  className="bg-[#10162f] h-[23px]"> <h2 className="text-center text-white font-Cairo "> :رتب ب</h2></div>
                     <div>
-                        <div className="text-center mt-2">
-                            <p href="#"  id="sort_by_date" className="mt-3 text-center cursor-pointer">التاريخ</p>
+                        <div onClick={()=>{Sortdata("date")}} className="text-center mt-2">
+                            <p  id="sort_by_date" className="mt-3 text-center cursor-pointer">التاريخ</p>
                         </div>
                         <div onClick={()=>{Sortdata("filename")}} className="text-center cursor-pointer mt-2">
                             <p  id="sort_by_name" className="mt-3 text-center">الإسم</p>
@@ -134,7 +163,7 @@ const Sortdata = (parm)=>{
             </div>
             }>
                 {
-                    drpzone ? <Dropzone/> : <></>
+                    drpzone ? <Dropzone closeTab={closeTab}/> : <></>
                 }
 
       
@@ -163,7 +192,7 @@ const Sortdata = (parm)=>{
                                 <p className="font-semibold text-lg">{item.filename}</p>
                             {/**<img src="{{asset('storage/p3.png')}}" height="50" width="50" alt="uo">--> */}
                                 <div className="flex absolute right-[1%]">
-                                    <p>{item.created_at}</p> 
+                                    <p>{item.created_at.substring(0, 10)}</p> 
                                     <div onClick={()=>{setMore(index)}} className="cursor-pointer option">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>

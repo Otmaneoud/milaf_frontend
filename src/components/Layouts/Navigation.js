@@ -7,13 +7,42 @@ import { DropdownButton } from '@/components/DropdownLink'
 import { useAuth } from '@/hooks/auth'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import axios from  '../../lib/axios'
+import useSWR from 'swr'
 
 const Navigation = ({ user }) => {
+    const [Filelist,setFilelist] = useState([]);
     const router = useRouter()
 
     const { logout } = useAuth()
 
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+    const [Search,setSearch]=useState(false);
+
+    const InpuData = (query)=>{
+         console.log("query", Boolean(query))
+        if(query){
+            setSearch(true);
+            axios
+            .get('/api/autocomplete-search',{
+                params:{query:query}
+            })
+            .then(res => {setFilelist(res.data)})
+            .catch(error => {
+            console.log("EErr",error);
+            })
+        }
+        else{
+            setSearch(false)
+        }
+   
+
+    }
+   /* const { data:file} = useSWR('/api/dashboard', InpuData)
+    if(!file){
+    return <p>Loading</p>
+    }*/
+    console.log("Autocomplete:",Filelist[0])
 
     return (
         <nav className="bg-white border-b border-gray-100">
@@ -42,6 +71,7 @@ const Navigation = ({ user }) => {
                             <div className="flex">
                                 <input
                                 type="text"
+                                onChange={(e)=>{InpuData(e.target.value)}}
                                 className="h-10  form-control block w-full px-3 py-1.5 text-right text-base font-normal text-gray-700 bg-white bg-clip-padding  border border-solid border-gray-300 transition ease-in-out mt-2 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                 id="searchFile"
                                 placeholder="إبحث عن ملف"
@@ -52,16 +82,32 @@ const Navigation = ({ user }) => {
                                     </svg>
                                 </button>
                             </div>
-                            <div id="auto_complet" className="absolute  z-10 top-14 w-[58%] border-[1px] border-gray-500 bg-white hidden">
+                            { Search ?
+                            <div id="auto_complet" className="absolute h-[42%] overflow-scroll   z-10 top-14 w-[58%] border-[1px] border-gray-500 bg-white">
                                 <div>
                                     <p className="font-Cairo text-center text-sm font-semibold mt-2 mr-3">الملفات الخاصة</p>
-                                    <ul id="searchResult"></ul>
+                                    <ul className="p-2" id="searchResult">
+                                        {
+                                         Filelist[0] && Filelist[0].map((v,index)=>
+                                         <Link target="_blank" key={index} href={"/display/"+v.id}>
+                                             <li className="mt-1 text-lg font-Cairo cursor-pointer hover:bg-[#ECEEFF] hover:text-xl " >{v.filename}</li>
+                                         </Link>)
+                                        }
+                                    </ul>
                                 </div>
                                 <div className="mb-2">
                                     <p className="font-Cairo font-semibold text-center text-sm mt-2 mr-3">ملفات أخرى</p>
-                                    <ul id="searchResult1"></ul>
+                                    <ul id="searchResult1">
+                                        {
+                                         Filelist[1] && Filelist[1].map((v,index)=>
+                                         <Link target="_blank" key={index} href={"/display/"+v.id}>
+                                             <li className="mt-1 text-lg font-Cairo cursor-pointer hover:bg-[#ECEEFF] hover:text-xl " >{v.filename}</li>
+                                         </Link>)
+                                        }
+                                    </ul>
                                 </div>
                             </div>   
+                            :<></>}
                         </div>
                         </div>
                     </div>
