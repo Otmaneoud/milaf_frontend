@@ -60,15 +60,10 @@ const Navigation = ({ user }) => {
                         </div>
 
                         {/* Navigation Links */}
-                        <div className="flex w-[62vw] items-center">
-             
-                        {/*  <div className="shrink-0 flex items-center">
-                            <a href="{{ route('dashboard') }}">
-                                <Image alt="Milaf logo" height="70px" width="70px"/>
-                            </a>
-                        </div>*/}
-                        <div className=" ml-20 w-[70vw]">
-                            <div className="flex">
+      
+                        <div className=" ml-20 w-[57vw] mt-1">
+                            {/* Input & autocompelte_bar */}
+                            <div className="flex flex-col">
                                 <input
                                 type="text"
                                 onChange={(e)=>{InpuData(e.target.value)}}
@@ -76,40 +71,36 @@ const Navigation = ({ user }) => {
                                 id="searchFile"
                                 placeholder="إبحث عن ملف"
                                 />   
-                                <button className="ml-4 "> 
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" viewBox="0 0 20 20" fill="#1a6567">
-                                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
-                                    </svg>
-                                </button>
+                                { Search ?
+                                <div id="auto_complet" className="absolute h-[42%] overflow-scroll   z-10 top-14 w-[57vw] border-[1px] border-gray-500 bg-white">
+                                    <div>
+                                        <p className="font-Cairo text-center text-sm font-semibold mt-2 mr-3">الملفات الخاصة</p>
+                                        <ul className="p-2" id="searchResult">
+                                            {
+                                            Filelist[0] && Filelist[0].map((v,index)=>
+                                            <Link target="_blank" key={index} href={"/display/"+v.id}>
+                                                <li className="mt-1 text-lg font-Cairo cursor-pointer hover:bg-[#ECEEFF] hover:text-xl " >{v.filename}</li>
+                                            </Link>)
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div className="mb-2">
+                                        <p className="font-Cairo font-semibold text-center text-sm mt-2 mr-3">ملفات أخرى</p>
+                                        <ul id="searchResult1">
+                                            {
+                                            Filelist[1] && Filelist[1].map((v,index)=>
+                                            <Link target="_blank" key={index} href={"/display/"+v.id}>
+                                                <li className="mt-1 text-lg font-Cairo cursor-pointer hover:bg-[#ECEEFF] hover:text-xl " >{v.filename}</li>
+                                            </Link>)
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>   
+                                :<></>}
                             </div>
-                            { Search ?
-                            <div id="auto_complet" className="absolute h-[42%] overflow-scroll   z-10 top-14 w-[58%] border-[1px] border-gray-500 bg-white">
-                                <div>
-                                    <p className="font-Cairo text-center text-sm font-semibold mt-2 mr-3">الملفات الخاصة</p>
-                                    <ul className="p-2" id="searchResult">
-                                        {
-                                         Filelist[0] && Filelist[0].map((v,index)=>
-                                         <Link target="_blank" key={index} href={"/display/"+v.id}>
-                                             <li className="mt-1 text-lg font-Cairo cursor-pointer hover:bg-[#ECEEFF] hover:text-xl " >{v.filename}</li>
-                                         </Link>)
-                                        }
-                                    </ul>
-                                </div>
-                                <div className="mb-2">
-                                    <p className="font-Cairo font-semibold text-center text-sm mt-2 mr-3">ملفات أخرى</p>
-                                    <ul id="searchResult1">
-                                        {
-                                         Filelist[1] && Filelist[1].map((v,index)=>
-                                         <Link target="_blank" key={index} href={"/display/"+v.id}>
-                                             <li className="mt-1 text-lg font-Cairo cursor-pointer hover:bg-[#ECEEFF] hover:text-xl " >{v.filename}</li>
-                                         </Link>)
-                                        }
-                                    </ul>
-                                </div>
-                            </div>   
-                            :<></>}
+                            {/*End of  Input & autocompelte_bar */}
                         </div>
-                        </div>
+           
                     </div>
 
                     {/* Settings Dropdown */}

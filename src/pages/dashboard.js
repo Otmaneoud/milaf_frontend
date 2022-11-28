@@ -60,7 +60,7 @@ const Sortdata = (parm)=>{
           break;
         case "date":
         file.sort((a, b) => {
-            return b.created_at - a.created_at;
+            return new Date(b.created_at) - new Date(a.created_at);
             });
             break;
         default:
@@ -77,6 +77,10 @@ const Filterdata = (parm)=>{
            records = file.filter((e) => {
                  return e.type === "png";
                 });break;
+        case "pdf":
+           records = file.filter((e) => {
+                 return e.type === "pdf";
+                });break;
         default:
           // code block
       }
@@ -84,6 +88,8 @@ const Filterdata = (parm)=>{
 console.log("rec:",records)
     setFilter(false);
 }
+
+
  console.log("swr data",file);
  console.log("index",More);
     return (
@@ -121,6 +127,9 @@ console.log("rec:",records)
                        {/* loop of types */} 
                          <div onClick={()=>{Filterdata("png")}}  className="text-center mt-2">
                             <p id="filter_by" className="mt-3 text-center font-Cairo cursor-pointer">png</p>
+                        </div>
+                        <div onClick={()=>{Filterdata("pdf")}}  className="text-center mt-2">
+                            <p id="filter_by" className="mt-3 text-center font-Cairo cursor-pointer">pdf</p>
                         </div>
                         {/* End loop */} 
                     </div>
